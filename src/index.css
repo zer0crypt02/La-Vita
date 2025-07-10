@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Gerekirse özel stilleri buraya yazarsın */
+
+/* Font Awesome’ın boyut sorunlarını önlemek için: */
+@layer base {
+  i.fas,
+  i.fab {
+    @apply inline-block;
+  }
+}
+
+.arrow-icon {
+  transition: transform 0.3s ease;
+}
+
+.group:hover .arrow-icon {
+  transform: translateX(6px); /* İsteğe göre hareket mesafesi */
+}
