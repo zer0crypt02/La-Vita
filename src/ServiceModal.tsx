@@ -4,12 +4,14 @@ interface ServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
   isDarkMode: boolean;
+  t: (key: string) => string;
 }
 
 const ServiceModal: React.FC<ServiceModalProps> = ({
   isOpen,
   onClose,
   isDarkMode,
+  t,
 }) => {
   if (!isOpen) return null;
 
@@ -49,7 +51,7 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
             </div>
 
             {/* Title */}
-            <h2 className="text-2xl font-bold mb-4">Eve Servis İmkanları</h2>
+            <h2 className="text-2xl font-bold mb-4">{t('homeService')}</h2>
 
             {/* Description */}
             <p
@@ -57,8 +59,7 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
                 isDarkMode ? 'text-gray-300' : 'text-gray-600'
               }`}
             >
-              Cuma, Cumartesi ve Pazar günleri evinize kadar geliyoruz! Detaylı
-              bilgi için bizi arayın.
+              {t('homeServiceDesc')}
             </p>
 
             {/* Phone number */}
@@ -79,7 +80,7 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
                   : 'bg-[#FF4B4B] hover:bg-[#E43535]'
               }`}
             >
-              Tamam
+              {t('ok')}
             </button>
           </div>
         </div>
