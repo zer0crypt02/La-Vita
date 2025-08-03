@@ -395,11 +395,12 @@ export const useTranslation = () => {
         );
       }
 
-      return (
+      const result =
         translations[key]?.[currentLanguage] ||
         manualTranslations.tr[key as keyof typeof manualTranslations.tr] ||
-        key
-      );
+        key;
+
+      return result;
     },
     [currentLanguage, translations]
   );
