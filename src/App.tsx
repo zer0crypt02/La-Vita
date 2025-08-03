@@ -1,10 +1,11 @@
 // The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
 import React, { useState, useEffect, useRef } from 'react';
-import ImageModal from './ImageModal.jsx';
-import ServiceModal from './ServiceModal.tsx';
-import LanguageModal from './LanguageModal.tsx';
-import { useTranslation } from './useTranslation.ts';
+import ImageModal from './ImageModal'; // ← JSX dosyasıysa, uzantı yazmana gerek yok
+import ServiceModal from './ServiceModal'; // ← TSX dosyasıysa, yine uzantıya gerek yok
+import LanguageModal from './LanguageModal';
+import { useTranslation } from './useTranslation';
 import * as echarts from 'echarts';
+
 const App: React.FC = () => {
   const { currentLanguage, changeLanguage, t, isTranslating } =
     useTranslation();
