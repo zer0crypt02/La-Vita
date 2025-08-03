@@ -1,8 +1,14 @@
 // The exported code uses Tailwind CSS. Install Tailwind CSS in your dev environment to ensure all styles work.
 import React, { useState, useEffect, useRef } from 'react';
-import ImageModal from './ImageModal';
+import ImageModal from './ImageModal.jsx';
+import ServiceModal from './ServiceModal.tsx';
+import LanguageModal from './LanguageModal.tsx';
+import { useTranslation } from './useTranslation.ts';
 import * as echarts from 'echarts';
 const App: React.FC = () => {
+  const { currentLanguage, changeLanguage, t, isTranslating } =
+    useTranslation();
+  const [showLanguageModal, setShowLanguageModal] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [currentMenu, setCurrentMenu] = useState('icecream');
@@ -14,8 +20,29 @@ const App: React.FC = () => {
   const [selectedAlt, setSelectedAlt] = useState('');
 
   const [showBellMessage, setShowBellMessage] = useState(false);
+  const [showServiceModal, setShowServiceModal] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLanguageSelect = async (language: string) => {
+    console.log('Language selected:', language);
+    setShowLanguageModal(false);
+    console.log('Language modal closed');
+    await changeLanguage(language);
+    console.log('Language changed');
+    // Dil seçildikten sonra yükleme ekranını başlat
+    setIsLoading(true);
+    console.log('Loading started');
+    setTimeout(() => {
+      setIsLoading(false);
+      console.log('Loading finished');
+      // Yüklenme ekranından sonra servis modal'ını göster
+      setTimeout(() => {
+        setShowServiceModal(true);
+        console.log('Service modal opened');
+      }, 500);
+    }, 2500);
+  };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<{ [key: string]: number }>(
@@ -74,11 +101,7 @@ const App: React.FC = () => {
     setIsOrderModalOpen(false);
     // Show success message or handle further processing
   };
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2500);
-  }, []);
+
   // Refs for scroll reveal animations
   const heroRef = useRef<HTMLDivElement>(null);
   const categoriesRef = useRef<HTMLDivElement>(null);
@@ -334,22 +357,22 @@ transform: translateY(0) !important;
         <div className="relative z-10 container mx-auto px-6 h-full flex items-center">
           <div className="max-w-2xl animate-fade-in">
             <RGBTextAnimation
-              text="Welcome to "
+              text={t('welcome')}
               className="text-5xl md:text-6xl font-bold mb-4"
             />
 
             <RGBTextAnimation
-              text="EisCafe"
+              text={t('eisCafe')}
               className="text-5xl md:text-6xl font-bold mb-4"
             />
 
             <RGBTextAnimation
-              text="La Vita"
+              text={t('laVita')}
               className="text-5xl md:text-6xl font-bold mb-4"
             />
 
             <div className="text-2xl font-extrabold mb-8">
-              <RGBTextAnimation2 text="Handmade with love and tradition. Taste the difference of first-class ingredients and authentic recipes." />
+              <RGBTextAnimation2 text={t('heroSubtitle')} />
             </div>
 
             <button
@@ -362,7 +385,7 @@ transform: translateY(0) !important;
               }}
               className="bg-[#FF4B4B] hover:bg-[#E43535] text-white py-3 px-8 rounded-button text-lg font-semibold transition-all duration-300 transform hover:scale-105 cursor-pointer whitespace-nowrap"
             >
-              Contact Us
+              {t('contactUs')}
             </button>
             {isOrderModalOpen && (
               <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -644,7 +667,7 @@ transform: translateY(0) !important;
               isDarkMode ? 'text-white' : 'text-gray-800'
             }`}
           >
-            Our Specialties
+            {t('ourSpecialties')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Ice Cream Category */}
@@ -663,14 +686,13 @@ transform: translateY(0) !important;
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-2xl font-bold mb-3">Ice Creams</h3>
+                <h3 className="text-2xl font-bold mb-3">{t('iceCreams')}</h3>
                 <p
                   className={`mb-4 ${
                     isDarkMode ? 'text-gray-300' : 'text-gray-600'
                   }`}
                 >
-                  Over 30 flavors of authentic Italian gelato made fresh daily
-                  with premium ingredients.
+                  {t('iceCreamDesc')}
                 </p>
                 <button
                   onClick={() => {
@@ -691,7 +713,7 @@ transform: translateY(0) !important;
                   }}
                   className="text-[#FF4B4B] font-semibold flex items-center cursor-pointer whitespace-nowrap"
                 >
-                  Explore Ice Creams
+                  {t('exploreIceCreams')}
                   <i className="fa-solid fa-arrow-right ml-2 transition-transform duration-300 ease-in-out group-hover:translate-x-1.5"></i>
                 </button>
               </div>
@@ -712,14 +734,13 @@ transform: translateY(0) !important;
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-2xl font-bold mb-3">Cakes</h3>
+                <h3 className="text-2xl font-bold mb-3">{t('cakes')}</h3>
                 <p
                   className={`mb-4 ${
                     isDarkMode ? 'text-gray-300' : 'text-gray-600'
                   }`}
                 >
-                  Crispy on the outside, fluffy on the inside. Served with your
-                  choice of toppings.
+                  {t('cakesDesc')}
                 </p>
                 <button
                   onClick={() => {
@@ -740,7 +761,7 @@ transform: translateY(0) !important;
                   }}
                   className="text-[#4CAF50] font-semibold flex items-center cursor-pointer whitespace-nowrap"
                 >
-                  See Cakes <i className="fas fa-arrow-right ml-2"></i>
+                  {t('seeCakes')} <i className="fas fa-arrow-right ml-2"></i>
                 </button>
               </div>
             </div>
@@ -760,14 +781,13 @@ transform: translateY(0) !important;
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-2xl font-bold mb-3">Beverages</h3>
+                <h3 className="text-2xl font-bold mb-3">{t('beverages')}</h3>
                 <p
                   className={`mb-4 ${
                     isDarkMode ? 'text-gray-300' : 'text-gray-600'
                   }`}
                 >
-                  From Italian coffee to refreshing sodas and specialty drinks
-                  to complement your treats.
+                  {t('beveragesDesc')}
                 </p>
                 <button
                   onClick={() => {
@@ -788,7 +808,8 @@ transform: translateY(0) !important;
                   }}
                   className="text-[#FF4B4B] font-semibold flex items-center cursor-pointer whitespace-nowrap"
                 >
-                  Explore Beverages <i className="fas fa-arrow-right ml-2"></i>
+                  {t('exploreBeverages')}{' '}
+                  <i className="fas fa-arrow-right ml-2"></i>
                 </button>
               </div>
             </div>
@@ -812,26 +833,23 @@ transform: translateY(0) !important;
               isDarkMode ? 'text-white' : 'text-gray-800'
             }`}
           >
-            What Our Customers Say
+            {t('whatCustomersSay')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 name: 'Customer 1',
-                quote:
-                  "These ice creams are amazing. They have different types of ice cream that most ice cream shops don't have.",
+                quote: t('customer1'),
                 rating: 5,
               },
               {
                 name: 'Customer 2',
-                quote:
-                  'Strawberry or chocolate chip ice cream goes very well with waffles.',
+                quote: t('customer2'),
                 rating: 5,
               },
               {
                 name: 'Customer 3',
-                quote:
-                  'There is a great atmosphere and friendly staff. The fact that the shop is open 24 hours a day is also a great thing.',
+                quote: t('customer3'),
                 rating: 4,
               },
             ].map((testimonial, index) => (
@@ -1379,6 +1397,14 @@ transform: translateY(0) !important;
   );
   return (
     <>
+      {/* Language Selection Modal */}
+      <LanguageModal
+        isOpen={showLanguageModal}
+        onLanguageSelect={handleLanguageSelect}
+        isDarkMode={isDarkMode}
+        t={t}
+      />
+
       {isLoading ? (
         <div
           className={`fixed inset-0 z-50 flex items-center justify-center ${
@@ -1600,10 +1626,7 @@ transform: translateY(0) !important;
                     <span className="text-[#98FF98]">Cafe</span>
                     <span className="text-[#DDB690]"> La Vita</span>
                   </h2>
-                  <p className="text-gray-400 mb-4">
-                    Serving authentic Italian gelato and treats since 1995. Our
-                    recipes have been passed down through generations.
-                  </p>
+                  <p className="text-gray-400 mb-4">{t('footerDescription')}</p>
                   <div className="flex space-x-4">
                     <a
                       href="#"
@@ -1627,46 +1650,52 @@ transform: translateY(0) !important;
                 </div>
                 {/* Quick Links */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
+                  <h3 className="text-lg font-semibold mb-3">
+                    {t('quickLinks')}
+                  </h3>
                   <ul className="space-y-2">
-                    {['Home', 'Menu', 'About Us', 'Contact', 'Careers'].map(
-                      (link, index) => {
-                        const tabKey = link.toLowerCase().replace(/\s+/g, ''); // 'About Us' → 'aboutus'
-                        const sectionIdMap: Record<string, string> = {
-                          home: 'home',
-                          menu: 'menu',
-                          aboutus: 'about',
-                          contact: 'contact',
-                        };
+                    {[
+                      { key: 'home', text: t('home') },
+                      { key: 'menu', text: t('menu') },
+                      { key: 'aboutUs', text: t('aboutUs') },
+                      { key: 'contact', text: t('contact') },
+                      { key: 'careers', text: t('careers') },
+                    ].map((link, index) => {
+                      const sectionIdMap: Record<string, string> = {
+                        home: 'home',
+                        menu: 'menu',
+                        aboutUs: 'about',
+                        contact: 'contact',
+                        careers: 'careers',
+                      };
 
-                        return (
-                          <li key={index}>
-                            <a
-                              className="text-gray-400 hover:text-white transition-colors duration-300 cursor-pointer"
-                              onClick={() => {
-                                setActiveTab(sectionIdMap[tabKey]);
-                                // küçük gecikmeyle scroll yapalım, render sonrası
-                                setTimeout(() => {
-                                  const target = document.getElementById(
-                                    sectionIdMap[tabKey]
-                                  );
-                                  target?.scrollIntoView({
-                                    behavior: 'smooth',
-                                  });
-                                }, 50);
-                              }}
-                            >
-                              {link}
-                            </a>
-                          </li>
-                        );
-                      }
-                    )}
+                      return (
+                        <li key={index}>
+                          <a
+                            className="text-gray-400 hover:text-white transition-colors duration-300 cursor-pointer"
+                            onClick={() => {
+                              setActiveTab(sectionIdMap[link.key]);
+                              // küçük gecikmeyle scroll yapalım, render sonrası
+                              setTimeout(() => {
+                                const target = document.getElementById(
+                                  sectionIdMap[link.key]
+                                );
+                                target?.scrollIntoView({
+                                  behavior: 'smooth',
+                                });
+                              }, 50);
+                            }}
+                          >
+                            {link.text}
+                          </a>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
                 {/* Contact */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Contact</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t('contact')}</h3>
                   <ul className="space-y-2">
                     <li className="flex items-start">
                       <i className="fas fa-map-marker-alt mt-1 mr-2 text-gray-400"></i>
@@ -1688,30 +1717,32 @@ transform: translateY(0) !important;
                 </div>
                 {/* Opening Hours */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Opening Hours</h3>
+                  <h3 className="text-lg font-semibold mb-4">
+                    {t('openingHoursFooter')}
+                  </h3>
                   <ul className="space-y-2 text-gray-400">
-                    <li>Everyday: 10:00 - 22:00</li>
+                    <li>{t('everyday')}</li>
                   </ul>
                 </div>
               </div>
               <div className="mt-12 pt-8 border-t border-gray-700">
                 <div className="flex flex-col md:flex-row justify-between items-center">
                   <p className="text-gray-400 mb-4 md:mb-0">
-                    &copy; {new Date().getFullYear()} EisCafe. All rights
-                    reserved.
+                    &copy; {new Date().getFullYear()} EisCafe.{' '}
+                    {t('allRightsReserved')}
                   </p>
                   <div className="flex space-x-4">
                     <a
                       href="#"
                       className="text-gray-400 hover:text-white transition-colors duration-300 cursor-pointer"
                     >
-                      Privacy Policy
+                      {t('privacyPolicy')}
                     </a>
                     <a
                       href="#"
                       className="text-gray-400 hover:text-white transition-colors duration-300 cursor-pointer"
                     >
-                      Terms of Service
+                      {t('termsOfService')}
                     </a>
                   </div>
                 </div>
@@ -1741,6 +1772,14 @@ transform: translateY(0) !important;
           </div>
         </div>
       )}
+
+      {/* Service Modal */}
+      <ServiceModal
+        isOpen={showServiceModal}
+        onClose={() => setShowServiceModal(false)}
+        isDarkMode={isDarkMode}
+        t={t}
+      />
     </>
   );
 };
