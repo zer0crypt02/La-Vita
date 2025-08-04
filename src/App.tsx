@@ -1206,9 +1206,10 @@ transform: translateY(0) !important;
           id="contact-heading"
           className="split-text text-4xl md:text-5xl font-bold text-center mb-12"
         >
-          {t('visitUs')}
+          Visit Us
         </h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          {/* Map and Info */}
           <div
             ref={mapRef}
             className={`rounded-xl overflow-hidden shadow-lg ${
@@ -1238,15 +1239,12 @@ transform: translateY(0) !important;
                     isDarkMode ? 'bg-[#FF6B6B]' : 'bg-[#FF4B4B]'
                   } text-white font-medium shadow-lg cursor-pointer whitespace-nowrap`}
                 >
-                  <i className="fas fa-directions mr-2"></i>{' '}
-                  {t('getDirections')}
+                  <i className="fas fa-directions mr-2"></i> Get Directions
                 </button>
               </div>
             </div>
             <div className="p-6">
-              <h2 className="text-2xl font-bold mb-4">
-                {t('contactInformation')}
-              </h2>
+              <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
               <div className="space-y-4">
                 <div className="flex items-start">
                   <i
@@ -1255,13 +1253,13 @@ transform: translateY(0) !important;
                     }`}
                   ></i>
                   <div>
-                    <h3 className="font-semibold">{t('address')}</h3>
+                    <h3 className="font-semibold">Address</h3>
                     <p
                       className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}
                     >
                       Markt 8,
                       <br />
-                      42853 Köln Remschied
+                      42853 Remschied
                       <br />
                       Germany
                     </p>
@@ -1274,7 +1272,7 @@ transform: translateY(0) !important;
                     }`}
                   ></i>
                   <div>
-                    <h3 className="font-semibold">{t('openingHours')}</h3>
+                    <h3 className="font-semibold">Opening Hours</h3>
                     <p
                       className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}
                     >
@@ -1289,7 +1287,7 @@ transform: translateY(0) !important;
                     }`}
                   ></i>
                   <div>
-                    <h3 className="font-semibold">{t('phone')}</h3>
+                    <h3 className="font-semibold">Phone</h3>
                     <p
                       className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}
                     >
@@ -1304,7 +1302,7 @@ transform: translateY(0) !important;
                     }`}
                   ></i>
                   <div>
-                    <h3 className="font-semibold">{t('email')}</h3>
+                    <h3 className="font-semibold">Email</h3>
                     <p
                       className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}
                     >
@@ -1315,6 +1313,7 @@ transform: translateY(0) !important;
               </div>
             </div>
           </div>
+          {/* Contact Form */}
           <div
             ref={contactFormRef}
             className={`rounded-xl overflow-hidden shadow-lg ${
@@ -1327,21 +1326,21 @@ transform: translateY(0) !important;
             }}
           ></div>
         </div>
+        {/* Visitor Statistics */}
         <div
           className={`rounded-xl overflow-hidden shadow-lg ${
             isDarkMode ? 'bg-[#2A2A40]' : 'bg-white'
           } mb-16`}
         >
           <div className="p-6">
-            <h2 className="text-2xl font-bold mb-6">
-              {t('visitorStatistics')}
-            </h2>
+            <h2 className="text-2xl font-bold mb-6">Visitor Statistics</h2>
             <div
               id="visitorsChart"
               style={{ width: '100%', height: '400px' }}
             ></div>
           </div>
         </div>
+        {/* FAQ Section */}
         <div
           ref={faqRef}
           className={`rounded-xl overflow-hidden shadow-lg ${
@@ -1355,19 +1354,39 @@ transform: translateY(0) !important;
         >
           <div className="p-6">
             <h2 id="faq-heading" className="split-text text-2xl font-bold mb-6">
-              {t('frequentlyAskedQuestions')}
+              Frequently Asked Questions
             </h2>
             <div className="space-y-4">
-              {[1, 2, 3, 4].map((i) => (
+              {[
+                {
+                  question: 'Do you offer dairy-free options?',
+                  answer: 'Yes, we have dairy-free options.',
+                },
+                {
+                  question: 'Do you do home delivery or takeout?',
+                  answer:
+                    'Yes, We have home service on Friday, Saturday and Sunday. For detailed information +49 176 323 002 30',
+                },
+                {
+                  question: 'Can I buy ice cream as a takeaway?',
+                  answer:
+                    'Yes, you can take our ice cream home in a bag. We have no weight limit.',
+                },
+                {
+                  question: 'Can I come with a pet?',
+                  answer:
+                    'Our outdoor seating area is pet-friendly. Your furry friends are welcome, too!',
+                },
+              ].map((faq, index) => (
                 <div
-                  key={i}
+                  key={index}
                   className={`reveal-item p-4 rounded-lg ${
                     isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-100'
                   }`}
                 >
-                  <h3 className="font-bold mb-2">{t(`faq${i}`)}</h3>
+                  <h3 className="font-bold mb-2">{faq.question}</h3>
                   <p className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
-                    {t(`faq${i}Answer`)}
+                    {faq.answer}
                   </p>
                 </div>
               ))}
