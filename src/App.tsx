@@ -839,17 +839,17 @@ transform: translateY(0) !important;
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                name: 'Customer 1',
+                name: 'Julia',
                 quote: t('customer1'),
                 rating: 5,
               },
               {
-                name: 'Customer 2',
+                name: 'Hannah',
                 quote: t('customer2'),
                 rating: 5,
               },
               {
-                name: 'Customer 3',
+                name: 'Esra',
                 quote: t('customer3'),
                 rating: 4,
               },
