@@ -45,7 +45,8 @@ const App: React.FC = () => {
     }, 2500);
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  // DEĞİŞİKLİK: isOrderModalOpen state'i kaldırıldı.
+  // const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<{ [key: string]: number }>(
     {}
   );
@@ -96,11 +97,13 @@ const App: React.FC = () => {
   useEffect(() => {
     calculateTotal();
   }, [selectedItems]);
+
   const handleOrderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the order submission
-    setIsOrderModalOpen(false);
-    // Show success message or handle further processing
+    // DEĞİŞİKLİK: Modal kapatmak yerine ana sayfaya yönlendiriyoruz.
+    setActiveTab('home');
+    alert('Your order has been placed successfully!'); // Örnek bir başarı mesajı
   };
 
   // Refs for scroll reveal animations
@@ -388,266 +391,7 @@ transform: translateY(0) !important;
             >
               {t('contactUs')}
             </button>
-            {isOrderModalOpen && (
-              <div className="fixed inset-0 z-50 overflow-y-auto">
-                <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
-                <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
-                  <div
-                    className={`relative w-full max-w-4xl p-6 mx-auto rounded-xl shadow-xl transition-all ${
-                      isDarkMode
-                        ? 'bg-[#2A2A40] text-white'
-                        : 'bg-white text-gray-800'
-                    }`}
-                  >
-                    <div className="absolute right-4 top-4">
-                      <button
-                        onClick={() => setIsOrderModalOpen(false)}
-                        className="text-gray-400 hover:text-gray-500 cursor-pointer"
-                      >
-                        <i className="fas fa-times text-xl"></i>
-                      </button>
-                    </div>
-                    <h2 className="text-2xl font-bold mb-6">
-                      Place Your Order
-                    </h2>
-                    <form onSubmit={handleOrderSubmit} className="space-y-6">
-                      {/* Menu Selection */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div
-                          className={`p-4 rounded-lg ${
-                            isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
-                          }`}
-                        >
-                          <h3 className="text-xl font-semibold mb-4">
-                            Menu Items
-                          </h3>
-                          <div className="space-y-4">
-                            {menuItems.icecream.map((item) => (
-                              <div
-                                key={item.id}
-                                className="flex items-center space-x-4"
-                              >
-                                <img
-                                  src={item.image}
-                                  alt={item.name}
-                                  className="w-16 h-16 rounded-lg object-cover"
-                                />
-                                <div className="flex-1">
-                                  <h4 className="font-medium">{item.name}</h4>
-                                  <p
-                                    className={`${
-                                      isDarkMode
-                                        ? 'text-gray-300'
-                                        : 'text-gray-600'
-                                    }`}
-                                  >
-                                    €{item.price.toFixed(2)}
-                                  </p>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleQuantityChange(
-                                        item.id,
-                                        (selectedItems[item.id] || 0) - 1
-                                      )
-                                    }
-                                    className={`px-2 py-1 rounded-button ${
-                                      isDarkMode
-                                        ? 'bg-[#FF6B6B]'
-                                        : 'bg-[#FF4B4B]'
-                                    } text-white cursor-pointer whitespace-nowrap`}
-                                  >
-                                    <i className="fas fa-minus"></i>
-                                  </button>
-                                  <span className="w-8 text-center">
-                                    {selectedItems[item.id] || 0}
-                                  </span>
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      handleQuantityChange(
-                                        item.id,
-                                        (selectedItems[item.id] || 0) + 1
-                                      )
-                                    }
-                                    className={`px-2 py-1 rounded-button ${
-                                      isDarkMode
-                                        ? 'bg-[#98FF98]'
-                                        : 'bg-[#4CAF50]'
-                                    } text-white cursor-pointer whitespace-nowrap`}
-                                  >
-                                    <i className="fas fa-plus"></i>
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        {/* Customer Information */}
-                        <div className="space-y-4">
-                          <div>
-                            <label className="block mb-2 font-medium">
-                              Name
-                            </label>
-                            <input
-                              type="text"
-                              required
-                              className={`w-full px-4 py-2 rounded-lg border-none ${
-                                isDarkMode
-                                  ? 'bg-[#3A3A50] text-white placeholder-gray-400'
-                                  : 'bg-gray-100 text-gray-800 placeholder-gray-500'
-                              }`}
-                              placeholder="Your name"
-                            />
-                          </div>
-                          <div>
-                            <label className="block mb-2 font-medium">
-                              Phone
-                            </label>
-                            <input
-                              type="tel"
-                              required
-                              className={`w-full px-4 py-2 rounded-lg border-none ${
-                                isDarkMode
-                                  ? 'bg-[#3A3A50] text-white placeholder-gray-400'
-                                  : 'bg-gray-100 text-gray-800 placeholder-gray-500'
-                              }`}
-                              placeholder="Your phone number"
-                            />
-                          </div>
-                          <div>
-                            <label className="block mb-2 font-medium">
-                              Delivery Option
-                            </label>
-                            <div className="flex space-x-4">
-                              <button
-                                type="button"
-                                onClick={() => setDeliveryOption('delivery')}
-                                className={`px-4 py-2 rounded-button cursor-pointer whitespace-nowrap ${
-                                  deliveryOption === 'delivery'
-                                    ? isDarkMode
-                                      ? 'bg-[#FF6B6B] text-white'
-                                      : 'bg-[#FF4B4B] text-white'
-                                    : isDarkMode
-                                    ? 'bg-[#3A3A50] text-gray-300'
-                                    : 'bg-gray-100 text-gray-600'
-                                }`}
-                              >
-                                Delivery
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setDeliveryOption('pickup')}
-                                className={`px-4 py-2 rounded-button cursor-pointer whitespace-nowrap ${
-                                  deliveryOption === 'pickup'
-                                    ? isDarkMode
-                                      ? 'bg-[#FF6B6B] text-white'
-                                      : 'bg-[#FF4B4B] text-white'
-                                    : isDarkMode
-                                    ? 'bg-[#3A3A50] text-gray-300'
-                                    : 'bg-gray-100 text-gray-600'
-                                }`}
-                              >
-                                Pickup
-                              </button>
-                            </div>
-                          </div>
-                          {deliveryOption === 'delivery' && (
-                            <div>
-                              <label className="block mb-2 font-medium">
-                                Delivery Address
-                              </label>
-                              <textarea
-                                required
-                                className={`w-full px-4 py-2 rounded-lg border-none ${
-                                  isDarkMode
-                                    ? 'bg-[#3A3A50] text-white placeholder-gray-400'
-                                    : 'bg-gray-100 text-gray-800 placeholder-gray-500'
-                                }`}
-                                rows={3}
-                                placeholder="Your delivery address"
-                              ></textarea>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      {/* Order Summary */}
-                      <div
-                        className={`p-4 rounded-lg ${
-                          isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
-                        }`}
-                      >
-                        <h3 className="text-xl font-semibold mb-4">
-                          Order Summary
-                        </h3>
-                        <div className="flex justify-between items-center">
-                          <span>Total Amount:</span>
-                          <span className="text-xl font-bold">
-                            €{orderTotal.toFixed(2)}
-                          </span>
-                        </div>
-                      </div>
-                      {/* Payment Method */}
-                      <div>
-                        <h3 className="text-xl font-semibold mb-4">
-                          Payment Method
-                        </h3>
-                        <div className="grid grid-cols-2 gap-4">
-                          <button
-                            type="button"
-                            className={`p-4 rounded-lg border-2 flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
-                              isDarkMode
-                                ? 'border-gray-600 hover:border-[#FF6B6B]'
-                                : 'border-gray-200 hover:border-[#FF4B4B]'
-                            }`}
-                          >
-                            <i className="fab fa-cc-visa text-2xl"></i>
-                            <span>Credit Card</span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`p-4 rounded-lg border-2 flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
-                              isDarkMode
-                                ? 'border-gray-600 hover:border-[#FF6B6B]'
-                                : 'border-gray-200 hover:border-[#FF4B4B]'
-                            }`}
-                          >
-                            <i className="fab fa-paypal text-2xl"></i>
-                            <span>PayPal</span>
-                          </button>
-                        </div>
-                      </div>
-                      {/* Action Buttons */}
-                      <div className="flex justify-end space-x-4">
-                        <button
-                          type="button"
-                          onClick={() => setIsOrderModalOpen(false)}
-                          className={`px-6 py-3 rounded-button cursor-pointer whitespace-nowrap ${
-                            isDarkMode
-                              ? 'bg-gray-600 text-white hover:bg-gray-700'
-                              : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                          }`}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          className={`px-6 py-3 rounded-button text-white cursor-pointer whitespace-nowrap ${
-                            isDarkMode
-                              ? 'bg-[#98FF98] text-gray-800 hover:bg-[#7EFF7E]'
-                              : 'bg-[#4CAF50] hover:bg-[#3D9C40]'
-                          }`}
-                        >
-                          Place Order
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* DEĞİŞİKLİK: Sipariş modal'ı buradan kaldırıldı. */}
           </div>
         </div>
       </div>
@@ -1020,6 +764,7 @@ transform: translateY(0) !important;
                     {item.description}
                   </p>
                   <button
+                    onClick={() => setActiveTab('order')} // DEĞİŞİKLİK: 'order' sekmesine yönlendirir
                     className={`mt-2 px-4 py-2 rounded-button ${
                       isDarkMode
                         ? 'bg-[#FF6B6B] hover:bg-[#FF5151]'
@@ -1098,6 +843,7 @@ transform: translateY(0) !important;
                     {item.description}
                   </p>
                   <button
+                    onClick={() => setActiveTab('order')} // DEĞİŞİKLİK: 'order' sekmesine yönlendirir
                     className={`mt-2 px-4 py-2 rounded-button ${
                       isDarkMode
                         ? 'bg-[#FF6B6B] hover:bg-[#FF5151]'
@@ -1180,6 +926,7 @@ transform: translateY(0) !important;
                     {item.description}
                   </p>
                   <button
+                    onClick={() => setActiveTab('order')} // DEĞİŞİKLİK: 'order' sekmesine yönlendirir
                     className={`mt-2 px-4 py-2 rounded-button ${
                       isDarkMode
                         ? 'bg-[#FF6B6B] hover:bg-[#FF5151]'
@@ -1195,6 +942,234 @@ transform: translateY(0) !important;
       </div>
     </div>
   );
+
+  // DEĞİŞİKLİK: Yeni renderOrder fonksiyonu oluşturuldu.
+  const renderOrder = () => (
+    <div className={`py-12 ${isDarkMode ? 'bg-[#1A1A2E]' : 'bg-[#FFFAF0]'}`}>
+      <div className="container mx-auto px-6">
+        <h1 className="text-4xl md:text-5xl font-bold text-center mb-12">
+          {t('placeOrder') || 'Place Your Order'}
+        </h1>
+        <div
+          className={`w-full max-w-4xl p-6 mx-auto rounded-xl shadow-xl ${
+            isDarkMode ? 'bg-[#2A2A40] text-white' : 'bg-white text-gray-800'
+          }`}
+        >
+          <form onSubmit={handleOrderSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div
+                className={`p-4 rounded-lg ${
+                  isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
+                }`}
+              >
+                <h3 className="text-xl font-semibold mb-4">Menu Items</h3>
+                <div className="space-y-4">
+                  {menuItems.icecream.map((item) => (
+                    <div key={item.id} className="flex items-center space-x-4">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-16 h-16 rounded-lg object-cover"
+                      />
+                      <div className="flex-1">
+                        <h4 className="font-medium">{item.name}</h4>
+                        <p
+                          className={`${
+                            isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                          }`}
+                        >
+                          €{item.price.toFixed(2)}
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleQuantityChange(
+                              item.id,
+                              (selectedItems[item.id] || 0) - 1
+                            )
+                          }
+                          className={`px-2 py-1 rounded-button ${
+                            isDarkMode ? 'bg-[#FF6B6B]' : 'bg-[#FF4B4B]'
+                          } text-white cursor-pointer whitespace-nowrap`}
+                        >
+                          <i className="fas fa-minus"></i>
+                        </button>
+                        <span className="w-8 text-center">
+                          {selectedItems[item.id] || 0}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleQuantityChange(
+                              item.id,
+                              (selectedItems[item.id] || 0) + 1
+                            )
+                          }
+                          className={`px-2 py-1 rounded-button ${
+                            isDarkMode ? 'bg-[#98FF98]' : 'bg-[#4CAF50]'
+                          } text-white cursor-pointer whitespace-nowrap`}
+                        >
+                          <i className="fas fa-plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="block mb-2 font-medium">Name</label>
+                  <input
+                    type="text"
+                    required
+                    className={`w-full px-4 py-2 rounded-lg border-none ${
+                      isDarkMode
+                        ? 'bg-[#3A3A50] text-white placeholder-gray-400'
+                        : 'bg-gray-100 text-gray-800 placeholder-gray-500'
+                    }`}
+                    placeholder="Your name"
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium">Phone</label>
+                  <input
+                    type="tel"
+                    required
+                    className={`w-full px-4 py-2 rounded-lg border-none ${
+                      isDarkMode
+                        ? 'bg-[#3A3A50] text-white placeholder-gray-400'
+                        : 'bg-gray-100 text-gray-800 placeholder-gray-500'
+                    }`}
+                    placeholder="Your phone number"
+                  />
+                </div>
+                <div>
+                  <label className="block mb-2 font-medium">
+                    Delivery Option
+                  </label>
+                  <div className="flex space-x-4">
+                    <button
+                      type="button"
+                      onClick={() => setDeliveryOption('delivery')}
+                      className={`px-4 py-2 rounded-button cursor-pointer whitespace-nowrap ${
+                        deliveryOption === 'delivery'
+                          ? isDarkMode
+                            ? 'bg-[#FF6B6B] text-white'
+                            : 'bg-[#FF4B4B] text-white'
+                          : isDarkMode
+                          ? 'bg-[#3A3A50] text-gray-300'
+                          : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      Delivery
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDeliveryOption('pickup')}
+                      className={`px-4 py-2 rounded-button cursor-pointer whitespace-nowrap ${
+                        deliveryOption === 'pickup'
+                          ? isDarkMode
+                            ? 'bg-[#FF6B6B] text-white'
+                            : 'bg-[#FF4B4B] text-white'
+                          : isDarkMode
+                          ? 'bg-[#3A3A50] text-gray-300'
+                          : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      Pickup
+                    </button>
+                  </div>
+                </div>
+                {deliveryOption === 'delivery' && (
+                  <div>
+                    <label className="block mb-2 font-medium">
+                      Delivery Address
+                    </label>
+                    <textarea
+                      required
+                      className={`w-full px-4 py-2 rounded-lg border-none ${
+                        isDarkMode
+                          ? 'bg-[#3A3A50] text-white placeholder-gray-400'
+                          : 'bg-gray-100 text-gray-800 placeholder-gray-500'
+                      }`}
+                      rows={3}
+                      placeholder="Your delivery address"
+                    ></textarea>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div
+              className={`p-4 rounded-lg ${
+                isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
+              }`}
+            >
+              <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
+              <div className="flex justify-between items-center">
+                <span>Total Amount:</span>
+                <span className="text-xl font-bold">
+                  €{orderTotal.toFixed(2)}
+                </span>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Payment Method</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  className={`p-4 rounded-lg border-2 flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
+                    isDarkMode
+                      ? 'border-gray-600 hover:border-[#FF6B6B]'
+                      : 'border-gray-200 hover:border-[#FF4B4B]'
+                  }`}
+                >
+                  <i className="fab fa-cc-visa text-2xl"></i>
+                  <span>Credit Card</span>
+                </button>
+                <button
+                  type="button"
+                  className={`p-4 rounded-lg border-2 flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
+                    isDarkMode
+                      ? 'border-gray-600 hover:border-[#FF6B6B]'
+                      : 'border-gray-200 hover:border-[#FF4B4B]'
+                  }`}
+                >
+                  <i className="fab fa-paypal text-2xl"></i>
+                  <span>PayPal</span>
+                </button>
+              </div>
+            </div>
+            <div className="flex justify-end space-x-4">
+              <button
+                type="button"
+                onClick={() => setActiveTab('menu')} // DEĞİŞİKLİK: Menüye geri döner
+                className={`px-6 py-3 rounded-button cursor-pointer whitespace-nowrap ${
+                  isDarkMode
+                    ? 'bg-gray-600 text-white hover:bg-gray-700'
+                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                }`}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className={`px-6 py-3 rounded-button text-white cursor-pointer whitespace-nowrap ${
+                  isDarkMode
+                    ? 'bg-[#98FF98] text-gray-800 hover:bg-[#7EFF7E]'
+                    : 'bg-[#4CAF50] hover:bg-[#3D9C40]'
+                }`}
+              >
+                Place Order
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderContact = () => (
     <div
       className={`py-12 ${
@@ -1486,7 +1461,8 @@ transform: translateY(0) !important;
                 </div>
                 {/* Navigation for larger screens */}
                 <nav className="hidden lg:flex items-center space-x-8">
-                  {['home', 'menu', 'contact'].map((tab) => (
+                  {/* DEĞİŞİKLİK: 'order' sekmesi eklendi */}
+                  {['home', 'menu', 'order', 'contact'].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
@@ -1542,7 +1518,8 @@ transform: translateY(0) !important;
                       backdropFilter: 'blur(8px)',
                     }}
                   >
-                    {['home', 'menu', 'contact'].map((tab) => (
+                    {/* DEĞİŞİKLİK: 'order' sekmesi mobil menüye eklendi */}
+                    {['home', 'menu', 'order', 'contact'].map((tab) => (
                       <button
                         key={tab}
                         onClick={() => {
@@ -1581,6 +1558,14 @@ transform: translateY(0) !important;
               className={activeTab === 'menu' ? 'block' : 'hidden'}
             >
               {renderMenu()}
+            </section>
+
+            {/* DEĞİŞİKLİK: Yeni 'order' sekmesi render ediliyor */}
+            <section
+              id="order"
+              className={activeTab === 'order' ? 'block' : 'hidden'}
+            >
+              {renderOrder()}
             </section>
 
             <section
@@ -1710,7 +1695,7 @@ transform: translateY(0) !important;
               <div className="mt-12 pt-8 border-t border-gray-700">
                 <div className="flex flex-col md:flex-row justify-between items-center">
                   <p className="text-gray-400 mb-4 md:mb-0">
-                    &copy; {new Date().getFullYear()} EisCafe.{' '}
+                    © {new Date().getFullYear()} EisCafe.{' '}
                     {t('allRightsReserved')}
                   </p>
                   <div className="flex space-x-4">
@@ -1765,6 +1750,7 @@ transform: translateY(0) !important;
     </>
   );
 };
+
 const RGBTextAnimation2 = ({
   text,
   className = '',
