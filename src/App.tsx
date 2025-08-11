@@ -906,7 +906,7 @@ transform: translateY(0) !important;
           id="menu-heading"
           className="split-text text-4xl md:text-5xl font-bold text-center mb-12"
         >
-          Our Menu
+          {t('ourMenu')}
         </h1>
         {/* Menu Tabs */}
         <div className="flex justify-center mb-12">
