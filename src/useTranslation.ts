@@ -56,6 +56,7 @@ export const useTranslation = () => {
       contactInformation: 'İletişim Bilgileri',
       address: 'Adres',
       openingHours: 'Çalışma Saatleri',
+      Everyday: 'Her gün',
       phone: 'Telefon',
       email: 'E-posta',
       getDirections: 'Yol Tarifi Al',
@@ -141,6 +142,7 @@ export const useTranslation = () => {
       contactInformation: 'Kontaktinformationen',
       address: 'Adresse',
       openingHours: 'Öffnungszeiten',
+      Everyday: 'Täglich',
       phone: 'Telefon',
       email: 'E-Mail',
       getDirections: 'Wegbeschreibung',
@@ -219,6 +221,9 @@ export const useTranslation = () => {
 
       // Menu
       ourMenu: 'Our Menu',
+      iceCream: 'Ice Cream',
+      cakesMenu: 'Cakes',
+      beveragesMenu: 'Beverages',
       addToOrder: 'Add to Order',
 
       // Contact
@@ -226,6 +231,7 @@ export const useTranslation = () => {
       contactInformation: 'Contact Information',
       address: 'Address',
       openingHours: 'Opening Hours',
+      Everyday: 'Everyday',
       phone: 'Phone',
       email: 'Email',
       getDirections: 'Get Directions',
@@ -311,6 +317,7 @@ export const useTranslation = () => {
       contactInformation: 'Información de Contacto',
       address: 'Dirección',
       openingHours: 'Horario de Apertura',
+      Everyday: 'Todos los días',
       phone: 'Teléfono',
       email: 'Correo Electrónico',
       getDirections: 'Obtener Direcciones',
