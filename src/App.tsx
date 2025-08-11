@@ -1208,7 +1208,7 @@ transform: translateY(0) !important;
         >
           {t('visitUs')}
         </h1>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        <div className="grid grid-cols-1 gap-12 mb-16">
           <div
             ref={mapRef}
             className={`rounded-xl overflow-hidden shadow-lg ${
@@ -1261,7 +1261,7 @@ transform: translateY(0) !important;
                     >
                       Markt 8,
                       <br />
-                      42853 Köln Remschied
+                      42853 Remschied
                       <br />
                       Germany
                     </p>
@@ -1278,7 +1278,7 @@ transform: translateY(0) !important;
                     <p
                       className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}
                     >
-                      Everyday : 10:00 - 22:00
+                      {t('Everyday')} : 10:00 - 22:00
                     </p>
                   </div>
                 </div>
