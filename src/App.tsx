@@ -31,6 +31,9 @@ const App: React.FC = () => {
     const setDefaultLanguage = async () => {
       // Yükleme ekranı göstermeden direkt dili değiştir.
       await changeLanguage('de');
+      setTimeout(() => {
+        setShowServiceModal(true);
+      }, 500);
     };
     setDefaultLanguage();
   }, []); // Sadece bir kez çalışması için bağımlılık eklendi.
