@@ -9,7 +9,8 @@ import * as echarts from 'echarts';
 const App: React.FC = () => {
   const { currentLanguage, changeLanguage, t, isTranslating } =
     useTranslation();
-  const [showLanguageModal, setShowLanguageModal] = useState(true);
+  // DEĞİŞİKLİK: Dil modal'ı başlangıçta kapalı olacak.
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [currentMenu, setCurrentMenu] = useState('icecream');
@@ -24,6 +25,15 @@ const App: React.FC = () => {
   const [showServiceModal, setShowServiceModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  // YENİ: Sayfa ilk yüklendiğinde varsayılan dili Almanca yap.
+  useEffect(() => {
+    const setDefaultLanguage = async () => {
+      // Yükleme ekranı göstermeden direkt dili değiştir.
+      await changeLanguage('de');
+    };
+    setDefaultLanguage();
+  }, []); // Sadece bir kez çalışması için bağımlılık eklendi.
 
   const handleLanguageSelect = async (language: string) => {
     console.log('Language selected:', language);
@@ -1306,7 +1316,10 @@ transform: translateY(0) !important;
   );
   return (
     <>
-      {/* Language Selection Modal */}
+      {/* YENİ: LanguageModal'ın çağrılması düzenlendi. 
+        NOT: Modal'ın içindeki başlık ve açıklamayı kaldırmak için `LanguageModal.tsx` dosyasını düzenlemeniz gerekmektedir.
+        Ayrıca, bayrakların görünmesi için o dosyadaki resim yollarını kontrol ediniz.
+      */}
       <LanguageModal
         isOpen={showLanguageModal}
         onLanguageSelect={handleLanguageSelect}
@@ -1432,8 +1445,21 @@ transform: translateY(0) !important;
                     </button>
                   ))}
                 </nav>
-                {/* Dark Mode Toggle and Mobile Menu */}
+                {/* Dark Mode, Language and Mobile Menu Toggles */}
                 <div className="flex items-center space-x-4">
+                  {/* YENİ: Dil Seçme Butonu */}
+                  <button
+                    onClick={() => setShowLanguageModal(true)}
+                    className={`p-2 rounded-full ${
+                      isDarkMode
+                        ? 'bg-[#3A3A50] text-white'
+                        : 'bg-gray-100 text-gray-700'
+                    } cursor-pointer`}
+                    aria-label="Select language"
+                  >
+                    <i className="fas fa-globe"></i>
+                  </button>
+
                   <button
                     onClick={toggleDarkMode}
                     className={`p-2 rounded-full ${
