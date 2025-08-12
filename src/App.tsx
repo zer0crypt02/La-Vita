@@ -196,17 +196,30 @@ const App: React.FC = () => {
       [itemId]: Math.max(0, quantity),
     }));
   };
+
+  // YENİ: Ürün sepete ekleme fonksiyonu
+  const handleAddToOrder = (itemId: string) => {
+    setSelectedItems((prev) => ({
+      ...prev,
+      [itemId]: (prev[itemId] || 0) + 1,
+    }));
+    setActiveTab('order'); // Sepet sayfasına yönlendir
+  };
+
   const calculateTotal = () => {
     let total = 0;
     const allItems = getMenuItemsForOrder();
     Object.entries(selectedItems).forEach(([itemId, quantity]) => {
-      const item = allItems.find((item) => item.id === itemId);
-      if (item) {
-        total += item.price * quantity;
+      if (quantity > 0) {
+        const item = allItems.find((item) => item.id === itemId);
+        if (item) {
+          total += item.price * quantity;
+        }
       }
     });
     setOrderTotal(total);
   };
+
   useEffect(() => {
     calculateTotal();
   }, [selectedItems, currentLanguage]); // currentLanguage'ı ekleyerek dil değiştiğinde hesaplamayı tetikle
@@ -829,7 +842,7 @@ transform: translateY(0) !important;
                   {t(item.descriptionKey)}
                 </p>
                 <button
-                  onClick={() => setActiveTab('order')}
+                  onClick={() => handleAddToOrder(item.id)} // DEĞİŞTİ: Sadece bu ürünü sepete ekle
                   className={`mt-2 px-4 py-2 rounded-button ${
                     isDarkMode
                       ? 'bg-[#FF6B6B] hover:bg-[#FF5151]'
@@ -846,235 +859,268 @@ transform: translateY(0) !important;
     </div>
   );
 
-  const renderOrder = () => (
-    <div className={`py-12 ${isDarkMode ? 'bg-[#1A1A2E]' : 'bg-[#FFFAF0]'}`}>
-      <div className="container mx-auto px-6">
-        <h1 className="text-4xl md:text-5xl font-bold text-center mb-12">
-          {t('placeYourOrder')}
-        </h1>
-        <div
-          className={`w-full max-w-4xl p-6 mx-auto rounded-xl shadow-xl ${
-            isDarkMode ? 'bg-[#2A2A40] text-white' : 'bg-white text-gray-800'
-          }`}
-        >
-          <form onSubmit={handleOrderSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div
-                className={`p-4 rounded-lg ${
-                  isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
-                }`}
-              >
-                <h3 className="text-xl font-semibold mb-4">{t('menuItems')}</h3>
-                <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-                  {getMenuItemsForOrder().map((item) => (
-                    <div key={item.id} className="flex items-center space-x-4">
-                      <img
-                        src={item.image}
-                        alt={t(item.nameKey)}
-                        className="w-16 h-16 rounded-lg object-cover"
-                      />
-                      <div className="flex-1">
-                        <h4 className="font-medium">{t(item.nameKey)}</h4>
-                        <p
-                          className={`${
-                            isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                          }`}
+  const renderOrder = () => {
+    // Sadece seçilmiş ürünleri filtrele
+    const selectedItemsList = Object.entries(selectedItems)
+      .filter(([_, quantity]) => quantity > 0)
+      .map(([itemId]) => {
+        const item = getMenuItemsForOrder().find((item) => item.id === itemId);
+        return item;
+      })
+      .filter(Boolean) as Array<{
+      id: string;
+      nameKey: string;
+      descriptionKey: string;
+      price: number;
+      image: string;
+      priceNoteKey?: string;
+    }>;
+
+    return (
+      <div className={`py-12 ${isDarkMode ? 'bg-[#1A1A2E]' : 'bg-[#FFFAF0]'}`}>
+        <div className="container mx-auto px-6">
+          <h1 className="text-4xl md:text-5xl font-bold text-center mb-12">
+            {t('placeYourOrder')}
+          </h1>
+          <div
+            className={`w-full max-w-4xl p-6 mx-auto rounded-xl shadow-xl ${
+              isDarkMode ? 'bg-[#2A2A40] text-white' : 'bg-white text-gray-800'
+            }`}
+          >
+            <form onSubmit={handleOrderSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div
+                  className={`p-4 rounded-lg ${
+                    isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
+                  }`}
+                >
+                  <h3 className="text-xl font-semibold mb-4">
+                    {t('menuItems')}
+                  </h3>
+                  <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                    {selectedItemsList.length === 0 ? (
+                      <p className="text-center py-8 text-gray-500">
+                        {t('noItemsSelected')}
+                      </p>
+                    ) : (
+                      selectedItemsList.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center space-x-4"
                         >
-                          €{item.price.toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleQuantityChange(
-                              item.id,
-                              (selectedItems[item.id] || 0) - 1
-                            )
-                          }
-                          className={`px-2 py-1 rounded-button ${
-                            isDarkMode ? 'bg-[#FF6B6B]' : 'bg-[#FF4B4B]'
-                          } text-white cursor-pointer whitespace-nowrap`}
-                        >
-                          <i className="fas fa-minus"></i>
-                        </button>
-                        <span className="w-8 text-center">
-                          {selectedItems[item.id] || 0}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleQuantityChange(
-                              item.id,
-                              (selectedItems[item.id] || 0) + 1
-                            )
-                          }
-                          className={`px-2 py-1 rounded-button ${
-                            isDarkMode ? 'bg-[#98FF98]' : 'bg-[#4CAF50]'
-                          } text-white cursor-pointer whitespace-nowrap`}
-                        >
-                          <i className="fas fa-plus"></i>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <label className="block mb-2 font-medium">{t('name')}</label>
-                  <input
-                    type="text"
-                    required
-                    className={`w-full px-4 py-2 rounded-lg border-none ${
-                      isDarkMode
-                        ? 'bg-[#3A3A50] text-white placeholder-gray-400'
-                        : 'bg-gray-100 text-gray-800 placeholder-gray-500'
-                    }`}
-                    placeholder={t('yourNamePlaceholder')}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-2 font-medium">{t('phone')}</label>
-                  <input
-                    type="tel"
-                    required
-                    className={`w-full px-4 py-2 rounded-lg border-none ${
-                      isDarkMode
-                        ? 'bg-[#3A3A50] text-white placeholder-gray-400'
-                        : 'bg-gray-100 text-gray-800 placeholder-gray-500'
-                    }`}
-                    placeholder={t('yourPhonePlaceholder')}
-                  />
-                </div>
-                <div>
-                  <label className="block mb-2 font-medium">
-                    {t('deliveryOption')}
-                  </label>
-                  <div className="flex space-x-4">
-                    <button
-                      type="button"
-                      onClick={() => setDeliveryOption('delivery')}
-                      className={`px-4 py-2 rounded-button cursor-pointer whitespace-nowrap ${
-                        deliveryOption === 'delivery'
-                          ? isDarkMode
-                            ? 'bg-[#FF6B6B] text-white'
-                            : 'bg-[#FF4B4B] text-white'
-                          : isDarkMode
-                          ? 'bg-[#3A3A50] text-gray-300'
-                          : 'bg-gray-100 text-gray-600'
-                      }`}
-                    >
-                      {t('delivery')}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDeliveryOption('pickup')}
-                      className={`px-4 py-2 rounded-button cursor-pointer whitespace-nowrap ${
-                        deliveryOption === 'pickup'
-                          ? isDarkMode
-                            ? 'bg-[#FF6B6B] text-white'
-                            : 'bg-[#FF4B4B] text-white'
-                          : isDarkMode
-                          ? 'bg-[#3A3A50] text-gray-300'
-                          : 'bg-gray-100 text-gray-600'
-                      }`}
-                    >
-                      {t('pickup')}
-                    </button>
+                          <img
+                            src={item.image}
+                            alt={t(item.nameKey)}
+                            className="w-16 h-16 rounded-lg object-cover"
+                          />
+                          <div className="flex-1">
+                            <h4 className="font-medium">{t(item.nameKey)}</h4>
+                            <p
+                              className={`${
+                                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                              }`}
+                            >
+                              €{item.price.toFixed(2)}
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  item.id,
+                                  (selectedItems[item.id] || 0) - 1
+                                )
+                              }
+                              className={`px-2 py-1 rounded-button ${
+                                isDarkMode ? 'bg-[#FF6B6B]' : 'bg-[#FF4B4B]'
+                              } text-white cursor-pointer whitespace-nowrap`}
+                            >
+                              <i className="fas fa-minus"></i>
+                            </button>
+                            <span className="w-8 text-center">
+                              {selectedItems[item.id] || 0}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  item.id,
+                                  (selectedItems[item.id] || 0) + 1
+                                )
+                              }
+                              className={`px-2 py-1 rounded-button ${
+                                isDarkMode ? 'bg-[#98FF98]' : 'bg-[#4CAF50]'
+                              } text-white cursor-pointer whitespace-nowrap`}
+                            >
+                              <i className="fas fa-plus"></i>
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </div>
                 </div>
-                {deliveryOption === 'delivery' && (
+                <div className="space-y-4">
                   <div>
                     <label className="block mb-2 font-medium">
-                      {t('deliveryAddress')}
+                      {t('name')}
                     </label>
-                    <textarea
+                    <input
+                      type="text"
                       required
                       className={`w-full px-4 py-2 rounded-lg border-none ${
                         isDarkMode
                           ? 'bg-[#3A3A50] text-white placeholder-gray-400'
                           : 'bg-gray-100 text-gray-800 placeholder-gray-500'
                       }`}
-                      rows={3}
-                      placeholder={t('yourDeliveryAddressPlaceholder')}
-                    ></textarea>
+                      placeholder={t('yourNamePlaceholder')}
+                    />
                   </div>
-                )}
+                  <div>
+                    <label className="block mb-2 font-medium">
+                      {t('phone')}
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      className={`w-full px-4 py-2 rounded-lg border-none ${
+                        isDarkMode
+                          ? 'bg-[#3A3A50] text-white placeholder-gray-400'
+                          : 'bg-gray-100 text-gray-800 placeholder-gray-500'
+                      }`}
+                      placeholder={t('yourPhonePlaceholder')}
+                    />
+                  </div>
+                  <div>
+                    <label className="block mb-2 font-medium">
+                      {t('deliveryOption')}
+                    </label>
+                    <div className="flex space-x-4">
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryOption('delivery')}
+                        className={`px-4 py-2 rounded-button cursor-pointer whitespace-nowrap ${
+                          deliveryOption === 'delivery'
+                            ? isDarkMode
+                              ? 'bg-[#FF6B6B] text-white'
+                              : 'bg-[#FF4B4B] text-white'
+                            : isDarkMode
+                            ? 'bg-[#3A3A50] text-gray-300'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        {t('delivery')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeliveryOption('pickup')}
+                        className={`px-4 py-2 rounded-button cursor-pointer whitespace-nowrap ${
+                          deliveryOption === 'pickup'
+                            ? isDarkMode
+                              ? 'bg-[#FF6B6B] text-white'
+                              : 'bg-[#FF4B4B] text-white'
+                            : isDarkMode
+                            ? 'bg-[#3A3A50] text-gray-300'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        {t('pickup')}
+                      </button>
+                    </div>
+                  </div>
+                  {deliveryOption === 'delivery' && (
+                    <div>
+                      <label className="block mb-2 font-medium">
+                        {t('deliveryAddress')}
+                      </label>
+                      <textarea
+                        required
+                        className={`w-full px-4 py-2 rounded-lg border-none ${
+                          isDarkMode
+                            ? 'bg-[#3A3A50] text-white placeholder-gray-400'
+                            : 'bg-gray-100 text-gray-800 placeholder-gray-500'
+                        }`}
+                        rows={3}
+                        placeholder={t('yourDeliveryAddressPlaceholder')}
+                      ></textarea>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div
-              className={`p-4 rounded-lg ${
-                isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
-              }`}
-            >
-              <h3 className="text-xl font-semibold mb-4">
-                {t('orderSummary')}
-              </h3>
-              <div className="flex justify-between items-center">
-                <span>{t('totalAmount')}</span>
-                <span className="text-xl font-bold">
-                  €{orderTotal.toFixed(2)}
-                </span>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4">
-                {t('paymentMethod')}
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  className={`p-4 rounded-lg border-2 flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
-                    isDarkMode
-                      ? 'border-gray-600 hover:border-[#FF6B6B]'
-                      : 'border-gray-200 hover:border-[#FF4B4B]'
-                  }`}
-                >
-                  <i className="fab fa-cc-visa text-2xl"></i>
-                  <span>{t('creditCard')}</span>
-                </button>
-                <button
-                  type="button"
-                  className={`p-4 rounded-lg border-2 flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
-                    isDarkMode
-                      ? 'border-gray-600 hover:border-[#FF6B6B]'
-                      : 'border-gray-200 hover:border-[#FF4B4B]'
-                  }`}
-                >
-                  <i className="fab fa-paypal text-2xl"></i>
-                  <span>{t('payPal')}</span>
-                </button>
-              </div>
-            </div>
-            <div className="flex justify-end space-x-4">
-              <button
-                type="button"
-                onClick={() => setActiveTab('menu')}
-                className={`px-6 py-3 rounded-button cursor-pointer whitespace-nowrap ${
-                  isDarkMode
-                    ? 'bg-gray-600 text-white hover:bg-gray-700'
-                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+              <div
+                className={`p-4 rounded-lg ${
+                  isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
                 }`}
               >
-                {t('cancel')}
-              </button>
-              <button
-                type="submit"
-                className={`px-6 py-3 rounded-button text-white cursor-pointer whitespace-nowrap ${
-                  isDarkMode
-                    ? 'bg-[#98FF98] text-gray-800 hover:bg-[#7EFF7E]'
-                    : 'bg-[#4CAF50] hover:bg-[#3D9C40]'
-                }`}
-              >
-                {t('placeOrder')}
-              </button>
-            </div>
-          </form>
+                <h3 className="text-xl font-semibold mb-4">
+                  {t('orderSummary')}
+                </h3>
+                <div className="flex justify-between items-center">
+                  <span>{t('totalAmount')}</span>
+                  <span className="text-xl font-bold">
+                    €{orderTotal.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-4">
+                  {t('paymentMethod')}
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    className={`p-4 rounded-lg border-2 flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
+                      isDarkMode
+                        ? 'border-gray-600 hover:border-[#FF6B6B]'
+                        : 'border-gray-200 hover:border-[#FF4B4B]'
+                    }`}
+                  >
+                    <i className="fab fa-cc-visa text-2xl"></i>
+                    <span>{t('creditCard')}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`p-4 rounded-lg border-2 flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
+                      isDarkMode
+                        ? 'border-gray-600 hover:border-[#FF6B6B]'
+                        : 'border-gray-200 hover:border-[#FF4B4B]'
+                    }`}
+                  >
+                    <i className="fab fa-paypal text-2xl"></i>
+                    <span>{t('payPal')}</span>
+                  </button>
+                </div>
+              </div>
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('menu')}
+                  className={`px-6 py-3 rounded-button cursor-pointer whitespace-nowrap ${
+                    isDarkMode
+                      ? 'bg-gray-600 text-white hover:bg-gray-700'
+                      : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                  }`}
+                >
+                  {t('cancel')}
+                </button>
+                <button
+                  type="submit"
+                  className={`px-6 py-3 rounded-button text-white cursor-pointer whitespace-nowrap ${
+                    isDarkMode
+                      ? 'bg-[#98FF98] text-gray-800 hover:bg-[#7EFF7E]'
+                      : 'bg-[#4CAF50] hover:bg-[#3D9C40]'
+                  }`}
+                >
+                  {t('placeOrder')}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderContact = () => (
     <div
