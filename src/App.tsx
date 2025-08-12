@@ -45,39 +45,151 @@ const App: React.FC = () => {
     }, 2500);
   };
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // DEĞİŞİKLİK: isOrderModalOpen state'i kaldırıldı.
-  // const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<{ [key: string]: number }>(
     {}
   );
 
   const [deliveryOption, setDeliveryOption] = useState('delivery');
   const [orderTotal, setOrderTotal] = useState(0);
-  const menuItems = {
+
+  // --- ÇEVİRİ İÇİN YENİ VERİ YAPISI ---
+  // Menü verilerini bileşen içinde tanımlayarak 't' fonksiyonuna erişim sağlandı.
+  const menuData = {
     icecream: [
       {
-        id: 'vanilla',
-        name: 'Classic Vanilla Bean',
+        id: 'vanilla-bean',
+        nameKey: 'classicVanillaBeanName',
+        descriptionKey: 'classicVanillaBeanDesc',
         price: 3.5,
         image:
-          'https://readdy.ai/api/search-image?query=Creamy%20vanilla%20bean%20gelato%20scoop%20in%20a%20waffle%20cone%20against%20a%20neutral%20background%2C%20showing%20rich%20texture%20with%20visible%20vanilla%20bean%20specks%2C%20professional%20food%20photography%20with%20soft%20natural%20lighting&width=100&height=100&seq=vanilla2&orientation=squarish',
+          'https://raw.githubusercontent.com/zer0crypt02/For-React/main/jole.jpeg',
       },
       {
-        id: 'chocolate',
-        name: 'Rich Chocolate',
+        id: 'spaghetti-classic',
+        nameKey: 'spaghettiClassicName',
+        descriptionKey: 'spaghettiClassicDesc',
+        price: 6.2,
+        image:
+          'https://raw.githubusercontent.com/zer0crypt02/For-React/main/garip.jpeg',
+      },
+      {
+        id: 'fruit-cup',
+        nameKey: 'fruitCupName',
+        descriptionKey: 'fruitCupDesc',
+        price: 9.2,
+        image:
+          'https://raw.githubusercontent.com/zer0crypt02/For-React/main/meyveli-dondurma.jpeg',
+      },
+      {
+        id: 'pizza-ice',
+        nameKey: 'pizzaIceName',
+        descriptionKey: 'pizzaIceDesc',
+        price: 3.75,
+        image:
+          'https://raw.githubusercontent.com/zer0crypt02/For-React/main/meyveli.jpeg',
+      },
+      {
+        id: 'mixed-fruit-cup',
+        nameKey: 'mixedFruitCupName',
+        descriptionKey: 'mixedFruitCupDesc',
+        price: 9.2,
+        image:
+          'https://raw.githubusercontent.com/zer0crypt02/For-React/main/kar%C4%B1s%C4%B1k.jpeg',
+      },
+      {
+        id: 'lemon-sorbet',
+        nameKey: 'lemonSorbetName',
+        descriptionKey: 'lemonSorbetDesc',
         price: 3.5,
         image:
-          'https://readdy.ai/api/search-image?query=Rich%20dark%20chocolate%20gelato%20scoop%20in%20an%20elegant%20glass%20bowl%20against%20a%20neutral%20background%2C%20showing%20velvety%20texture%20and%20deep%20color%2C%20professional%20food%20photography%20with%20soft%20natural%20lighting&width=100&height=100&seq=choco2&orientation=squarish',
+          'https://readdy.ai/api/search-image?query=Bright%20yellow%20lemon%20sorbet%20scoop%20in%20a%20glass%20bowl%20against%20a%20neutral%20background%2C%20showing%20icy%20texture%20and%20vibrant%20color%2C%20professional%20food%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=lemon1&orientation=squarish',
+      },
+    ],
+    cakes: [
+      {
+        id: 'banana-cake',
+        nameKey: 'bananaCakeName',
+        descriptionKey: 'bananaCakeDesc',
+        price: 15.0,
+        priceNoteKey: 'priceForAll',
+        image:
+          'https://raw.githubusercontent.com/zer0crypt02/For-React/main/muzlu-pasta.jpeg',
       },
       {
-        id: 'pistachio',
-        name: 'Pistachio Dream',
-        price: 4.0,
+        id: 'cake-pop',
+        nameKey: 'cakePopName',
+        descriptionKey: 'cakePopDesc',
+        price: 1.0,
+        priceNoteKey: 'pricePerPiece',
         image:
-          'https://readdy.ai/api/search-image?query=Pistachio%20gelato%20scoop%20with%20visible%20nut%20pieces%20in%20a%20white%20ceramic%20bowl%20against%20a%20neutral%20background%2C%20showing%20creamy%20texture%20and%20pale%20green%20color%2C%20professional%20food%20photography%20with%20soft%20natural%20lighting&width=100&height=100&seq=pistachio2&orientation=squarish',
+          'https://raw.githubusercontent.com/zer0crypt02/For-React/main/toplar.jpeg',
+      },
+      {
+        id: 'waffle-nutella',
+        nameKey: 'waffleNutellaName',
+        descriptionKey: 'waffleNutellaDesc',
+        price: 4.5,
+        image:
+          'https://raw.githubusercontent.com/zer0crypt02/For-React/main/waffle.jpeg',
+      },
+      {
+        id: 'waffle-complete',
+        nameKey: 'waffleCompleteName',
+        descriptionKey: 'waffleCompleteDesc',
+        price: 7.5,
+        image:
+          'https://readdy.ai/api/search-image?query=Belgian%20waffle%20topped%20with%20banana%20slices%2C%20three%20gelato%20scoops%2C%20and%20whipped%20cream%20on%20a%20long%20plate%20against%20a%20neutral%20background%2C%20showing%20elaborate%20presentation%2C%20professional%20food%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=bananawaffle1&orientation=squarish',
+      },
+    ],
+    beverages: [
+      {
+        id: 'espresso',
+        nameKey: 'espressoName',
+        descriptionKey: 'espressoDesc',
+        price: 2.5,
+        image:
+          'https://readdy.ai/api/search-image?query=Espresso%20in%20a%20small%20white%20cup%20on%20a%20saucer%20against%20a%20neutral%20background%2C%20showing%20rich%20crema%20and%20dark%20color%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=espresso1&orientation=squarish',
+      },
+      {
+        id: 'cappuccino',
+        nameKey: 'cappuccinoName',
+        descriptionKey: 'cappuccinoDesc',
+        price: 2.8,
+        image:
+          'https://readdy.ai/api/search-image?query=Cappuccino%20in%20a%20white%20cup%20with%20perfect%20milk%20foam%20art%20on%20a%20saucer%20against%20a%20neutral%20background%2C%20showing%20creamy%20texture%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=cappuccino1&orientation=squarish',
+      },
+      {
+        id: 'ice-coffee-1',
+        nameKey: 'iceCoffee1Name',
+        descriptionKey: 'iceCoffee1Desc',
+        price: 5.2,
+        priceNoteKey: 'priceSmall',
+        image:
+          'https://readdy.ai/api/search-image?query=Affogato%20with%20vanilla%20gelato%20being%20covered%20with%20hot%20espresso%20in%20a%20glass%20cup%20against%20a%20neutral%20background%2C%20showing%20contrast%20of%20hot%20and%20cold%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=affogato1&orientation=squarish',
+      },
+      {
+        id: 'italian-soda',
+        nameKey: 'italianSodaName',
+        descriptionKey: 'italianSodaDesc',
+        price: 3.75,
+        image:
+          'https://readdy.ai/api/search-image?query=Colorful%20Italian%20soda%20in%20a%20tall%20glass%20with%20ice%20and%20straw%20against%20a%20neutral%20background%2C%20showing%20fizzy%20bubbles%20and%20vibrant%20color%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=soda1&orientation=squarish',
+      },
+      {
+        id: 'ice-coffee-2',
+        nameKey: 'iceCoffee2Name',
+        descriptionKey: 'iceCoffee2Desc',
+        price: 5.2,
+        image:
+          'https://readdy.ai/api/search-image?query=Iced%20coffee%20in%20a%20tall%20glass%20with%20ice%20cubes%20and%20straw%20against%20a%20neutral%20background%2C%20showing%20condensation%20on%20glass%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=icedcoffee1&orientation=squarish',
       },
     ],
   };
+
+  const getMenuItemsForOrder = () => {
+    return [...menuData.icecream, ...menuData.cakes, ...menuData.beverages];
+  };
+
   const handleQuantityChange = (itemId: string, quantity: number) => {
     setSelectedItems((prev) => ({
       ...prev,
@@ -86,8 +198,9 @@ const App: React.FC = () => {
   };
   const calculateTotal = () => {
     let total = 0;
+    const allItems = getMenuItemsForOrder();
     Object.entries(selectedItems).forEach(([itemId, quantity]) => {
-      const item = menuItems.icecream.find((item) => item.id === itemId);
+      const item = allItems.find((item) => item.id === itemId);
       if (item) {
         total += item.price * quantity;
       }
@@ -96,14 +209,12 @@ const App: React.FC = () => {
   };
   useEffect(() => {
     calculateTotal();
-  }, [selectedItems]);
+  }, [selectedItems, currentLanguage]); // currentLanguage'ı ekleyerek dil değiştiğinde hesaplamayı tetikle
 
   const handleOrderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle the order submission
-    // DEĞİŞİKLİK: Modal kapatmak yerine ana sayfaya yönlendiriyoruz.
     setActiveTab('home');
-    alert('Your order has been placed successfully!'); // Örnek bir başarı mesajı
+    alert(t('orderSuccessMessage'));
   };
 
   // Refs for scroll reveal animations
@@ -490,7 +601,7 @@ transform: translateY(0) !important;
                 <button
                   onClick={() => {
                     setActiveTab('menu');
-                    setCurrentMenu('waffles');
+                    setCurrentMenu('cakes');
                     setTimeout(() => {
                       const target =
                         document.getElementById('icecream-section');
@@ -537,7 +648,7 @@ transform: translateY(0) !important;
                 <button
                   onClick={() => {
                     setActiveTab('menu');
-                    setCurrentMenu('icecream');
+                    setCurrentMenu('beverages');
                     setTimeout(() => {
                       const target =
                         document.getElementById('icecream-section');
@@ -633,6 +744,7 @@ transform: translateY(0) !important;
       </div>
     </div>
   );
+
   const renderMenu = () => (
     <div
       ref={menuItemsRef}
@@ -655,7 +767,7 @@ transform: translateY(0) !important;
         {/* Menu Tabs */}
         <div className="flex justify-center mb-12">
           <div className="inline-flex rounded-lg overflow-hidden">
-            {['icecream', 'cakes', 'beverages'].map((tab) => (
+            {(['icecream', 'cakes', 'beverages'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setCurrentMenu(tab)}
@@ -669,9 +781,7 @@ transform: translateY(0) !important;
                     : 'bg-white text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                {tab === 'icecream'
-                  ? 'Ice Cream'
-                  : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {t(tab)}
               </button>
             ))}
           </div>
@@ -681,274 +791,66 @@ transform: translateY(0) !important;
           id="icecream-section"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {currentMenu === 'icecream' &&
-            [
-              {
-                name: 'Classic Vanilla Bean',
-                description:
-                  'Smooth and creamy vanilla gelato made with Madagascar vanilla beans',
-                price: '€3.00',
-                image:
-                  'https://raw.githubusercontent.com/zer0crypt02/For-React/main/jole.jpeg',
-              },
-              {
-                name: 'Spaghetti Klassik',
-                description:
-                  'Decadent chocolate gelato made with premium Belgian chocolate',
-                price: '€6.20',
-                image:
-                  'https://raw.githubusercontent.com/zer0crypt02/For-React/main/garip.jpeg',
-              },
-              {
-                name: 'Frucht Becher',
-                description:
-                  'Authentic pistachio gelato made with Sicilian pistachios',
-                price: '€9.20',
-                image:
-                  'https://raw.githubusercontent.com/zer0crypt02/For-React/main/meyveli-dondurma.jpeg',
-              },
-              {
-                name: 'Pizzaeis',
-                description:
-                  'Fresh strawberry gelato made with seasonal berries',
-                price: '€3.75',
-                image:
-                  'https://raw.githubusercontent.com/zer0crypt02/For-React/main/meyveli.jpeg',
-              },
-              {
-                name: 'Frucht Becher',
-                description:
-                  'Sweet and salty caramel gelato with caramel swirls',
-                price: '€9.20',
-                image:
-                  'https://raw.githubusercontent.com/zer0crypt02/For-React/main/kar%C4%B1s%C4%B1k.jpeg',
-              },
-              {
-                name: 'Lemon Sorbet',
-                description:
-                  'Refreshing dairy-free lemon sorbet, perfect for hot days',
-                price: '€3.50',
-                image:
-                  'https://readdy.ai/api/search-image?query=Bright%20yellow%20lemon%20sorbet%20scoop%20in%20a%20glass%20bowl%20against%20a%20neutral%20background%2C%20showing%20icy%20texture%20and%20vibrant%20color%2C%20professional%20food%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=lemon1&orientation=squarish',
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className={`reveal-item rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl ${
-                  isDarkMode ? 'bg-[#2A2A40]' : 'bg-white'
-                }`}
-              >
-                <div className="h-30 overflow-hidden rounded-lg">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover object-bottom transition-transform duration-500 hover:scale-110"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold">{item.name}</h3>
-                    <span
-                      className={`font-bold ${
-                        isDarkMode ? 'text-[#98FF98]' : 'text-[#4CAF50]'
-                      }`}
-                    >
-                      {item.price}
-                    </span>
-                  </div>
-                  <p
-                    className={`mb-4 ${
-                      isDarkMode ? 'text-gray-300' : 'text-gray-600'
+          {/* @ts-ignore */}
+          {menuData[currentMenu].map((item: any, index: number) => (
+            <div
+              key={index}
+              className={`reveal-item rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl ${
+                isDarkMode ? 'bg-[#2A2A40]' : 'bg-white'
+              }`}
+            >
+              <div className="h-48 overflow-hidden rounded-t-lg">
+                <img
+                  src={item.image}
+                  alt={t(item.nameKey)}
+                  className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-110"
+                />
+              </div>
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="text-xl font-bold">{t(item.nameKey)}</h3>
+                  <span
+                    className={`font-bold text-lg whitespace-nowrap ${
+                      isDarkMode ? 'text-[#98FF98]' : 'text-[#4CAF50]'
                     }`}
                   >
-                    {item.description}
-                  </p>
-                  <button
-                    onClick={() => setActiveTab('order')} // DEĞİŞİKLİK: 'order' sekmesine yönlendirir
-                    className={`mt-2 px-4 py-2 rounded-button ${
-                      isDarkMode
-                        ? 'bg-[#FF6B6B] hover:bg-[#FF5151]'
-                        : 'bg-[#FF4B4B] hover:bg-[#E43535]'
-                    } text-white font-medium transition-colors duration-300 cursor-pointer whitespace-nowrap`}
-                  >
-                    Add to Order
-                  </button>
+                    {item.priceNoteKey
+                      ? t(item.priceNoteKey, {
+                          price: `€${item.price.toFixed(2)}`,
+                        })
+                      : `€${item.price.toFixed(2)}`}
+                  </span>
                 </div>
+                <p
+                  className={`mb-4 ${
+                    isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                  }`}
+                >
+                  {t(item.descriptionKey)}
+                </p>
+                <button
+                  onClick={() => setActiveTab('order')}
+                  className={`mt-2 px-4 py-2 rounded-button ${
+                    isDarkMode
+                      ? 'bg-[#FF6B6B] hover:bg-[#FF5151]'
+                      : 'bg-[#FF4B4B] hover:bg-[#E43535]'
+                  } text-white font-medium transition-colors duration-300 cursor-pointer whitespace-nowrap`}
+                >
+                  {t('addToOrder')}
+                </button>
               </div>
-            ))}
-          {currentMenu === 'cakes' &&
-            [
-              {
-                name: 'Vanillan Banane Toten',
-                description:
-                  '! Ein Stück Price : 4.50€ Toten bitte vorbestellen',
-                price: 'Alles : 15€',
-                image:
-                  'https://raw.githubusercontent.com/zer0crypt02/For-React/main/muzlu-pasta.jpeg',
-              },
-              {
-                name: 'Cake Pop',
-                description:
-                  'Belgian waffle topped with chocolate sauce and chocolate gelato',
-                price: 'Ein Stück: 1€',
-                image:
-                  'https://raw.githubusercontent.com/zer0crypt02/For-React/main/toplar.jpeg',
-              },
-              {
-                name: 'Waffle Nutella und Früschte',
-                description:
-                  'Belgian waffle topped with mixed berries and vanilla gelato',
-                price: '€4.50',
-                image:
-                  'https://raw.githubusercontent.com/zer0crypt02/For-React/main/waffle.jpeg',
-              },
-              {
-                name: 'Waffle Komplett',
-                description:
-                  'Belgian waffle topped with banana slices, three gelato flavors, and whipped cream',
-                price: '€7.50',
-                image:
-                  'https://readdy.ai/api/search-image?query=Belgian%20waffle%20topped%20with%20banana%20slices%2C%20three%20gelato%20scoops%2C%20and%20whipped%20cream%20on%20a%20long%20plate%20against%20a%20neutral%20background%2C%20showing%20elaborate%20presentation%2C%20professional%20food%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=bananawaffle1&orientation=squarish',
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className={`reveal-item rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl ${
-                  isDarkMode ? 'bg-[#2A2A40]' : 'bg-white'
-                }`}
-              >
-                <div className="h-30 overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-110"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold">{item.name}</h3>
-                    <span
-                      className={`font-bold ${
-                        isDarkMode ? 'text-[#98FF98]' : 'text-[#4CAF50]'
-                      }`}
-                    >
-                      {item.price}
-                    </span>
-                  </div>
-                  <p
-                    className={`mb-4 ${
-                      isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                    }`}
-                  >
-                    {item.description}
-                  </p>
-                  <button
-                    onClick={() => setActiveTab('order')} // DEĞİŞİKLİK: 'order' sekmesine yönlendirir
-                    className={`mt-2 px-4 py-2 rounded-button ${
-                      isDarkMode
-                        ? 'bg-[#FF6B6B] hover:bg-[#FF5151]'
-                        : 'bg-[#FF4B4B] hover:bg-[#E43535]'
-                    } text-white font-medium transition-colors duration-300 cursor-pointer whitespace-nowrap`}
-                  >
-                    Add to Order
-                  </button>
-                </div>
-              </div>
-            ))}
-          {currentMenu === 'beverages' &&
-            [
-              {
-                name: 'Espresso',
-                description: 'Espresso',
-                price: '€2.50',
-                image:
-                  'https://readdy.ai/api/search-image?query=Espresso%20in%20a%20small%20white%20cup%20on%20a%20saucer%20against%20a%20neutral%20background%2C%20showing%20rich%20crema%20and%20dark%20color%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=espresso1&orientation=squarish',
-              },
-              {
-                name: 'Cappuccino',
-                description: 'Espresso und milch und milchschaum',
-                price: '€2.80',
-                image:
-                  'https://readdy.ai/api/search-image?query=Cappuccino%20in%20a%20white%20cup%20with%20perfect%20milk%20foam%20art%20on%20a%20saucer%20against%20a%20neutral%20background%2C%20showing%20creamy%20texture%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=cappuccino1&orientation=squarish',
-              },
-              {
-                name: 'Eiskaffee - 1',
-                description: 'Kalte kaffe vanilla eis und cafe souse und sahne',
-                price: 'Klein : €5.20',
-                image:
-                  'https://readdy.ai/api/search-image?query=Affogato%20with%20vanilla%20gelato%20being%20covered%20with%20hot%20espresso%20in%20a%20glass%20cup%20against%20a%20neutral%20background%2C%20showing%20contrast%20of%20hot%20and%20cold%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=affogato1&orientation=squarish',
-              },
-              {
-                name: 'Italian Soda',
-                description: 'Sparkling water with your choice of fruit syrup',
-                price: '€3.75',
-                image:
-                  'https://readdy.ai/api/search-image?query=Colorful%20Italian%20soda%20in%20a%20tall%20glass%20with%20ice%20and%20straw%20against%20a%20neutral%20background%2C%20showing%20fizzy%20bubbles%20and%20vibrant%20color%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=soda1&orientation=squarish',
-              },
-              {
-                name: 'Eiskaffe - 2',
-                description:
-                  'Kalte kaffe, karamel souse und kaffe souse und eıswüfel',
-                price: '€5.20',
-                image:
-                  'https://readdy.ai/api/search-image?query=Iced%20coffee%20in%20a%20tall%20glass%20with%20ice%20cubes%20and%20straw%20against%20a%20neutral%20background%2C%20showing%20condensation%20on%20glass%2C%20professional%20beverage%20photography%20with%20soft%20natural%20lighting&width=300&height=300&seq=icedcoffee1&orientation=squarish',
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className={`reveal-item rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl ${
-                  isDarkMode ? 'bg-[#2A2A40]' : 'bg-white'
-                }`}
-              >
-                <div className="h-30 overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-110"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-bold">{item.name}</h3>
-                    <span
-                      className={`font-bold ${
-                        isDarkMode ? 'text-[#98FF98]' : 'text-[#4CAF50]'
-                      }`}
-                    >
-                      {item.price}
-                    </span>
-                  </div>
-                  <p
-                    className={`mb-4 ${
-                      isDarkMode ? 'text-gray-300' : 'text-gray-600'
-                    }`}
-                  >
-                    {item.description}
-                  </p>
-                  <button
-                    onClick={() => setActiveTab('order')} // DEĞİŞİKLİK: 'order' sekmesine yönlendirir
-                    className={`mt-2 px-4 py-2 rounded-button ${
-                      isDarkMode
-                        ? 'bg-[#FF6B6B] hover:bg-[#FF5151]'
-                        : 'bg-[#FF4B4B] hover:bg-[#E43535]'
-                    } text-white font-medium transition-colors duration-300 cursor-pointer whitespace-nowrap`}
-                  >
-                    Add to Order
-                  </button>
-                </div>
-              </div>
-            ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 
-  // DEĞİŞİKLİK: Yeni renderOrder fonksiyonu oluşturuldu.
   const renderOrder = () => (
     <div className={`py-12 ${isDarkMode ? 'bg-[#1A1A2E]' : 'bg-[#FFFAF0]'}`}>
       <div className="container mx-auto px-6">
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-12">
-          {t('placeOrder') || 'Place Your Order'}
+          {t('placeYourOrder')}
         </h1>
         <div
           className={`w-full max-w-4xl p-6 mx-auto rounded-xl shadow-xl ${
@@ -962,17 +864,17 @@ transform: translateY(0) !important;
                   isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
                 }`}
               >
-                <h3 className="text-xl font-semibold mb-4">Menu Items</h3>
-                <div className="space-y-4">
-                  {menuItems.icecream.map((item) => (
+                <h3 className="text-xl font-semibold mb-4">{t('menuItems')}</h3>
+                <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                  {getMenuItemsForOrder().map((item) => (
                     <div key={item.id} className="flex items-center space-x-4">
                       <img
                         src={item.image}
-                        alt={item.name}
+                        alt={t(item.nameKey)}
                         className="w-16 h-16 rounded-lg object-cover"
                       />
                       <div className="flex-1">
-                        <h4 className="font-medium">{item.name}</h4>
+                        <h4 className="font-medium">{t(item.nameKey)}</h4>
                         <p
                           className={`${
                             isDarkMode ? 'text-gray-300' : 'text-gray-600'
@@ -1020,7 +922,7 @@ transform: translateY(0) !important;
               </div>
               <div className="space-y-4">
                 <div>
-                  <label className="block mb-2 font-medium">Name</label>
+                  <label className="block mb-2 font-medium">{t('name')}</label>
                   <input
                     type="text"
                     required
@@ -1029,11 +931,11 @@ transform: translateY(0) !important;
                         ? 'bg-[#3A3A50] text-white placeholder-gray-400'
                         : 'bg-gray-100 text-gray-800 placeholder-gray-500'
                     }`}
-                    placeholder="Your name"
+                    placeholder={t('yourNamePlaceholder')}
                   />
                 </div>
                 <div>
-                  <label className="block mb-2 font-medium">Phone</label>
+                  <label className="block mb-2 font-medium">{t('phone')}</label>
                   <input
                     type="tel"
                     required
@@ -1042,12 +944,12 @@ transform: translateY(0) !important;
                         ? 'bg-[#3A3A50] text-white placeholder-gray-400'
                         : 'bg-gray-100 text-gray-800 placeholder-gray-500'
                     }`}
-                    placeholder="Your phone number"
+                    placeholder={t('yourPhonePlaceholder')}
                   />
                 </div>
                 <div>
                   <label className="block mb-2 font-medium">
-                    Delivery Option
+                    {t('deliveryOption')}
                   </label>
                   <div className="flex space-x-4">
                     <button
@@ -1063,7 +965,7 @@ transform: translateY(0) !important;
                           : 'bg-gray-100 text-gray-600'
                       }`}
                     >
-                      Delivery
+                      {t('delivery')}
                     </button>
                     <button
                       type="button"
@@ -1078,14 +980,14 @@ transform: translateY(0) !important;
                           : 'bg-gray-100 text-gray-600'
                       }`}
                     >
-                      Pickup
+                      {t('pickup')}
                     </button>
                   </div>
                 </div>
                 {deliveryOption === 'delivery' && (
                   <div>
                     <label className="block mb-2 font-medium">
-                      Delivery Address
+                      {t('deliveryAddress')}
                     </label>
                     <textarea
                       required
@@ -1095,7 +997,7 @@ transform: translateY(0) !important;
                           : 'bg-gray-100 text-gray-800 placeholder-gray-500'
                       }`}
                       rows={3}
-                      placeholder="Your delivery address"
+                      placeholder={t('yourDeliveryAddressPlaceholder')}
                     ></textarea>
                   </div>
                 )}
@@ -1106,16 +1008,20 @@ transform: translateY(0) !important;
                 isDarkMode ? 'bg-[#3A3A50]' : 'bg-gray-50'
               }`}
             >
-              <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
+              <h3 className="text-xl font-semibold mb-4">
+                {t('orderSummary')}
+              </h3>
               <div className="flex justify-between items-center">
-                <span>Total Amount:</span>
+                <span>{t('totalAmount')}</span>
                 <span className="text-xl font-bold">
                   €{orderTotal.toFixed(2)}
                 </span>
               </div>
             </div>
             <div>
-              <h3 className="text-xl font-semibold mb-4">Payment Method</h3>
+              <h3 className="text-xl font-semibold mb-4">
+                {t('paymentMethod')}
+              </h3>
               <div className="grid grid-cols-2 gap-4">
                 <button
                   type="button"
@@ -1126,7 +1032,7 @@ transform: translateY(0) !important;
                   }`}
                 >
                   <i className="fab fa-cc-visa text-2xl"></i>
-                  <span>Credit Card</span>
+                  <span>{t('creditCard')}</span>
                 </button>
                 <button
                   type="button"
@@ -1137,21 +1043,21 @@ transform: translateY(0) !important;
                   }`}
                 >
                   <i className="fab fa-paypal text-2xl"></i>
-                  <span>PayPal</span>
+                  <span>{t('payPal')}</span>
                 </button>
               </div>
             </div>
             <div className="flex justify-end space-x-4">
               <button
                 type="button"
-                onClick={() => setActiveTab('menu')} // DEĞİŞİKLİK: Menüye geri döner
+                onClick={() => setActiveTab('menu')}
                 className={`px-6 py-3 rounded-button cursor-pointer whitespace-nowrap ${
                   isDarkMode
                     ? 'bg-gray-600 text-white hover:bg-gray-700'
                     : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                 }`}
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 type="submit"
@@ -1161,7 +1067,7 @@ transform: translateY(0) !important;
                     : 'bg-[#4CAF50] hover:bg-[#3D9C40]'
                 }`}
               >
-                Place Order
+                {t('placeOrder')}
               </button>
             </div>
           </form>
@@ -1476,7 +1382,7 @@ transform: translateY(0) !important;
                           : 'text-gray-700 hover:text-gray-900'
                       }`}
                     >
-                      {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      {t(tab)}
                     </button>
                   ))}
                 </nav>
@@ -1536,7 +1442,7 @@ transform: translateY(0) !important;
                             : 'text-gray-700 hover:bg-gray-100'
                         }`}
                       >
-                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                        {t(tab)}
                       </button>
                     ))}
                   </div>
